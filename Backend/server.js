@@ -4,7 +4,7 @@ require("express-async-errors");
 
 const databaseConfig = require("./config/database.config");
 const errorHandlerMiddleware = require("./error/error.middleware");
-const NotFoundError = require("./error/NotFoundError");
+const NotFoundError = require("./error/error.classes/NotFoundError");
 
 const constants = require("./constants");
 require("dotenv").config();

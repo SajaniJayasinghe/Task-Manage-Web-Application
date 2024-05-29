@@ -1,5 +1,5 @@
 const { StatusCodes } = require("http-status-codes");
-const InternalServerError = require("./InternalServerError");
+const InternalServerError = require("./error.classes/InternalServerError");
 
 const errorHandlerMiddleware = async (err, req, res, next) => {
   let customError = {
