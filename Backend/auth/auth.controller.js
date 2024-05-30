@@ -13,22 +13,28 @@ const LoginUser = async (req, res) => {
     throw new BadRequestError("Email and password are required!");
   }
 
-  // Check if user exists
-  const user = await authService.findById(email);
-  if (!user) {
+  //check if user exists
+  const isAuthCheck = await authService.findById(email);
+
+  if (!isAuthCheck) {
     throw new NotFoundError("Invalid Email!");
   }
-  // Check if password is correct
+  //check if password is correct
   const isPasswordCorrect = await authUtil.comparePassword(
     password,
-    user.password
+    isAuthCheck.password
   );
+
   if (!isPasswordCorrect) {
     throw new UnauthorizedError("Invalid Password");
   }
-  //Generate Token
-  const token = authUtil.signToken(user);
-  // Respond with token and role
+
+  //populate user
+  const dbPopulatedUser = await isAuthCheck.populate("user");
+
+  //generate token
+  const token = authUtil.signToken(dbPopulatedUser.user);
+
   return res
     .status(StatusCodes.OK)
     .setHeader("authorization", `Bearer ${token}`)

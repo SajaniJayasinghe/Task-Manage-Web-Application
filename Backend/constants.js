@@ -1,6 +1,6 @@
 const constants = {
   API: {
-    PREFIX: "api/v1",
+    PREFIX: "/api/v1",
   },
 };
 

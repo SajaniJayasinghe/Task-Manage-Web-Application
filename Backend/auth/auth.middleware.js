@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const authUtil = require("auth.util");
+const authUtil = require("./auth.utill");
 const UnauthorizedError = require("../error/error.classes/UnauthorizedError");
 require("dotenv").config();
 
