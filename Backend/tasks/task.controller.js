@@ -77,4 +77,24 @@ const GetTaskById = async (req, res) => {
   }
 };
 
-module.exports = { CreateTask, GetAllTasks, GetTaskById };
+//Update a Task by ID
+const UpdateTask = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const updatedTask = await TaskService.findByIdAndUpdate(taskId, req.body);
+    if (!updatedTask) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Task not found" });
+    }
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Task updated successfully", task: updatedTask });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+module.exports = { CreateTask, GetAllTasks, GetTaskById, UpdateTask };

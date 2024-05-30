@@ -29,6 +29,23 @@ const findById = async (id) => {
 };
 
 /**
+ * Find a task by its ID and update it
+ * @param {string} id - The ID of the task to update
+ * @param {Object} update - The update object
+ * @param {Object} session - The session object for transactions (optional)
+ * @returns {Promise<Task>} - The updated task
+ */
+const findByIdAndUpdate = async (id, update, session) => {
+  if (session) {
+    return await Task.findByIdAndUpdate(id, update, { new: true }).session(
+      session
+    );
+  } else {
+    return await Task.findByIdAndUpdate(id, update, { new: true });
+  }
+};
+
+/**
  * Find a task by its ID and delete it
  * @param {string} id - The ID of the task to delete
  * @param {Object} session - The session object for transactions (optional)
@@ -46,5 +63,6 @@ module.exports = {
   save,
   findAll,
   findById,
-  findById,
+  findByIdAndUpdate,
+  findByIdAndDelete,
 };

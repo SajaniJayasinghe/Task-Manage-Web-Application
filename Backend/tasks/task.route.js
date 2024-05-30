@@ -25,4 +25,11 @@ TaskRouter.get(
   taskController.GetTaskById
 );
 
+// Route for updating a task by ID
+TaskRouter.put(
+  "/updateTask/:id",
+  authMiddleware.authorize(),
+  taskController.UpdateTask
+);
+
 module.exports = TaskRouter;
