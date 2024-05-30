@@ -1,9 +1,9 @@
 const { StatusCodes } = require("http-status-codes");
 const { startSession } = require("mongoose");
 const userUtil = require("./user.util");
-const User = require("../user/user.model");
+const User = require("./user.model");
 const Auth = require("../auth/auth.model");
-const UserService = require("../user/user.service");
+const UserService = require("./user.service");
 const AuthService = require("../auth/auth.service");
 
 //Error messages
