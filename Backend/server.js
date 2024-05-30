@@ -17,10 +17,12 @@ app.use(express.json());
 //import routes
 const AuthRouter = require("./auth/auth.route");
 const UserRouter = require("./user/user.route");
+const TaskRouter = require("./taskmanage/task.route");
 
 //defines routes
 app.use(constants.API.PREFIX.concat("/auth"), AuthRouter);
 app.use(constants.API.PREFIX.concat("/user"), UserRouter);
+app.use(constants.API.PREFIX.concat("/task"), TaskRouter);
 
 //error handler middleware
 app.use(errorHandlerMiddleware);
