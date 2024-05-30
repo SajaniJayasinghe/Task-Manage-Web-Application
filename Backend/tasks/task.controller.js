@@ -47,4 +47,34 @@ const CreateTask = async (req, res) => {
   }
 };
 
-module.exports = { CreateTask };
+//Get all tasks
+const GetAllTasks = async (req, res) => {
+  try {
+    const tasks = await TaskService.findAll({ user: req.auth.id });
+    res.status(StatusCodes.OK).json(tasks);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+// Get a task by ID
+const GetTaskById = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const task = await TaskService.findById(taskId);
+    if (!task) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Task not found" });
+    }
+    res.status(StatusCodes.OK).json(task);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+module.exports = { CreateTask, GetAllTasks, GetTaskById };

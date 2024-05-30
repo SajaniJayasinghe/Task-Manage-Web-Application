@@ -11,4 +11,18 @@ TaskRouter.post(
   taskController.CreateTask
 );
 
+// Route for getting all tasks
+TaskRouter.get(
+  "/getAllTasks",
+  authMiddleware.authorize(),
+  taskController.GetAllTasks
+);
+
+// Route for getting a task by ID
+TaskRouter.get(
+  "/getTask/:id",
+  authMiddleware.authorize(),
+  taskController.GetTaskById
+);
+
 module.exports = TaskRouter;

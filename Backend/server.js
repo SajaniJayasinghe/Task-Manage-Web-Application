@@ -17,7 +17,7 @@ app.use(express.json());
 //import routes
 const AuthRouter = require("./auth/auth.route");
 const UserRouter = require("./user/user.route");
-const TaskRouter = require("./taskmanage/task.route");
+const TaskRouter = require("./tasks/task.route");
 
 //defines routes
 app.use(constants.API.PREFIX.concat("/auth"), AuthRouter);
