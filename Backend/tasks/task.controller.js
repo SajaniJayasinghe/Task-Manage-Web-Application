@@ -97,4 +97,30 @@ const UpdateTask = async (req, res) => {
   }
 };
 
-module.exports = { CreateTask, GetAllTasks, GetTaskById, UpdateTask };
+// Delete a task by ID
+const DeleteTask = async (req, res) => {
+  try {
+    const taskId = req.params.id;
+    const deletedTask = await TaskService.findByIdAndDelete(taskId);
+    if (!deletedTask) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ message: "Task not found" });
+    }
+    res
+      .status(StatusCodes.OK)
+      .json({ message: "Task deleted successfully", task: deletedTask });
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
+module.exports = {
+  CreateTask,
+  GetAllTasks,
+  GetTaskById,
+  UpdateTask,
+  DeleteTask,
+};

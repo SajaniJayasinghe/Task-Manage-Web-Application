@@ -32,4 +32,11 @@ TaskRouter.put(
   taskController.UpdateTask
 );
 
+// Route for deleting a task by ID
+TaskRouter.delete(
+  "/deleteTask/:id",
+  authMiddleware.authorize(),
+  taskController.DeleteTask
+);
+
 module.exports = TaskRouter;
