@@ -28,7 +28,10 @@ const CreateTask = async (req, res) => {
     const task = new Task(taskData);
 
     // Save the task to the database
-    const createdTask = await TaskService.save(task, session);
+    const createdTask = await TaskService.save(task, session); // Add await here
+
+    // Commit the transaction
+    await session.commitTransaction();
 
     // Send response
     res.status(StatusCodes.CREATED).json({
