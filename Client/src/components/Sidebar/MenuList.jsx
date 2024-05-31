@@ -1,4 +1,5 @@
 import { Menu } from "antd";
+import { useState } from "react";
 import {
   HomeOutlined,
   SettingOutlined,
@@ -9,10 +10,21 @@ import { FaTasks, FaTrashAlt, FaUsers } from "react-icons/fa";
 import { MdTaskAlt, MdOutlinePendingActions } from "react-icons/md";
 
 const MenuList = () => {
+  const [selectedKeys, setSelectedKeys] = useState(["dashboard"]);
+
+  const handleMenuSelect = (e) => {
+    setSelectedKeys([e.key]);
+  };
+
   return (
-    <Menu theme="dark" className="menu-bar">
+    <Menu
+      theme="dark"
+      className="menu-bar"
+      selectedKeys={selectedKeys}
+      onSelect={handleMenuSelect}
+    >
       <Menu.Item key="dashboard" icon={<HomeOutlined />}>
-        Dashboard
+        <Link to="/dashboard">Dashboard</Link>
       </Menu.Item>
       <Menu.Item key="tasks" icon={<FaTasks />}>
         <Link to="/taskdetails">Tasks</Link>
