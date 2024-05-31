@@ -6,6 +6,7 @@ const databaseConfig = require("./config/database.config");
 const errorHandlerMiddleware = require("./error/error.middleware");
 const NotFoundError = require("./error/error.classes/NotFoundError");
 
+const { sendTaskReminder } = require("./util/taskscheduler");
 const constants = require("./constants");
 require("dotenv").config();
 
@@ -24,6 +25,7 @@ app.use(constants.API.PREFIX.concat("/auth"), AuthRouter);
 app.use(constants.API.PREFIX.concat("/user"), UserRouter);
 app.use(constants.API.PREFIX.concat("/task"), TaskRouter);
 
+sendTaskReminder();
 //error handler middleware
 app.use(errorHandlerMiddleware);
 
