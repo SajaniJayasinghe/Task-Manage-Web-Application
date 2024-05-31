@@ -6,7 +6,7 @@ import {
   AreaChartOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { FaTasks, FaTrashAlt, FaUsers } from "react-icons/fa";
+import { FaTasks, FaUser, FaUsers } from "react-icons/fa";
 import { MdTaskAlt, MdOutlinePendingActions } from "react-icons/md";
 
 const MenuList = () => {
@@ -43,8 +43,8 @@ const MenuList = () => {
       <Menu.Item key="/team" icon={<FaUsers />}>
         Team
       </Menu.Item>
-      <Menu.Item key="/trashed" icon={<FaTrashAlt />}>
-        Trash
+      <Menu.Item key="/profile" icon={<FaUser />}>
+        Profile
       </Menu.Item>
       <Menu.Item key="/setting" icon={<SettingOutlined />}>
         Setting

@@ -156,3 +156,6 @@
   font-size: 1rem;
   position: relative;
 }
+.custom-bell-button .anticon {
+  color: black;
+}
