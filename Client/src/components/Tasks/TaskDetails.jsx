@@ -176,7 +176,11 @@ const TaskDetails = () => {
                     .map((task) => (
                       <Card
                         key={task.id}
-                        style={{ marginBottom: "16px", position: "relative" }}
+                        style={{
+                          marginBottom: "16px",
+                          position: "relative",
+                          borderColor: "black",
+                        }}
                         title={
                           <div
                             style={{
@@ -251,7 +255,10 @@ const TaskDetails = () => {
                     .map((task) => (
                       <Card
                         key={task.id}
-                        style={{ marginBottom: "16px", position: "relative" }}
+                        style={{
+                          marginBottom: "16px",
+                          position: "relative",
+                        }}
                         title={
                           <div
                             style={{

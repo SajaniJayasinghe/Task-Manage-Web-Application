@@ -34,10 +34,10 @@ const MenuList = () => {
       <Menu.Item key="/completedtasks" icon={<MdTaskAlt />}>
         Completed
       </Menu.Item>
-      <Menu.Item key="/inprogress" icon={<AreaChartOutlined />}>
+      <Menu.Item key="/inprogresstasks" icon={<AreaChartOutlined />}>
         In Progress
       </Menu.Item>
-      <Menu.Item key="/pending" icon={<MdOutlinePendingActions />}>
+      <Menu.Item key="/pendingtasks" icon={<MdOutlinePendingActions />}>
         To Do
       </Menu.Item>
       <Menu.Item key="/team" icon={<FaUsers />}>

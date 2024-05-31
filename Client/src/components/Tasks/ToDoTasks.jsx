@@ -13,37 +13,37 @@ const TASK_TYPE = {
   completed: "bg-green-600",
 };
 
-const CompletedTasks = () => {
+const ToDoTasks = () => {
   const [tasks, setTasks] = useState([
     {
       id: 1,
-      title: "Completed Task 1",
+      title: "ToDo Task 1",
       description: "Description for completed task 1",
-      status: "completed",
+      status: "pending",
       createdate: "2024-05-01",
       duedate: "2024-05-10",
     },
     {
       id: 2,
-      title: "Completed Task 2",
+      title: "ToDo Task 2",
       description: "Description for completed task 2",
-      status: "completed",
+      status: "pending",
       createdate: "2024-05-02",
       duedate: "2024-05-11",
     },
     {
       id: 3,
-      title: "Completed Task 3",
+      title: "ToDo Task 3",
       description: "Description for completed task 3",
-      status: "completed",
+      status: "pending",
       createdate: "2024-05-03",
       duedate: "2024-05-12",
     },
     {
       id: 4,
-      title: "Completed Task 4",
+      title: "ToDo Task 4",
       description: "Description for completed task 4",
-      status: "completed",
+      status: "pending",
       createdate: "2024-05-03",
       duedate: "2024-05-12",
     },
@@ -100,12 +100,11 @@ const CompletedTasks = () => {
     // Fetch tasks from the database
     const fetchTasks = async () => {
       try {
-        // const response = await axios.get("/api/tasks/getAllTasks");
         const allTasks = response.data;
-        const completedTasks = allTasks.filter(
-          (task) => task.status === "completed"
+        const inprogressTasks = allTasks.filter(
+          (task) => task.status === "pending"
         );
-        setTasks(completedTasks);
+        setTasks(inprogressTasks);
       } catch (error) {
         console.error("Failed to fetch tasks from the database:", error);
       }
@@ -130,9 +129,7 @@ const CompletedTasks = () => {
               marginTop: "60px",
             }}
           >
-            <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>
-              Completed Tasks
-            </h1>
+            <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>ToDo Tasks</h1>
             <div>
               <Button
                 icon={<AppstoreOutlined />}
@@ -159,7 +156,7 @@ const CompletedTasks = () => {
                       bordered={true}
                       style={{
                         borderColor: "black",
-                        backgroundColor: "#F8F6F0 ",
+                        backgroundColor: "#D2EDDC",
                       }}
                     >
                       <p>{task.description}</p>
@@ -194,4 +191,4 @@ const CompletedTasks = () => {
   );
 };
 
-export default CompletedTasks;
+export default ToDoTasks;

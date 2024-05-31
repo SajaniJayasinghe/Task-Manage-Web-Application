@@ -7,6 +7,8 @@ import CreateTasks from "./components/Tasks/CreateTasks";
 import TaskDetails from "./components/Tasks/TaskDetails";
 import CompletedTasks from "./components/Tasks/CompletedTasks";
 import EditTasks from "./components/Tasks/EditTasks";
+import InProgressTasks from "./components/Tasks/InProgressTasks";
+import ToDoTasks from "./components/Tasks/ToDoTasks";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
       <Route path="/taskdetails" element={<TaskDetails />} />
       <Route path="/completedtasks" element={<CompletedTasks />} />
       <Route path="/edittask" element={<EditTasks />} />
+      <Route path="/inprogresstasks" element={<InProgressTasks />} />
+      <Route path="/pendingtasks" element={<ToDoTasks />} />
     </Routes>
   );
 }
