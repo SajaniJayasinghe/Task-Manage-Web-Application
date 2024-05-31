@@ -17,11 +17,12 @@ This is a web application built using React.js and Vite.js for the frontend, and
      npm start
 
   5. Make sure to set .env file
-     PORT = 8080
-     MONGODB_URL = xxxxx
-     JWT_SECRET_KEY=xxxx
-     SERVER_EMAIL=xxxx
-     SERVER_PASSWORD=xxxx
+
+     * PORT = 8080
+     * MONGODB_URL = xxxxx
+     * JWT_SECRET_KEY=xxxx
+     * SERVER_EMAIL=xxxx
+     * SERVER_PASSWORD=xxxx
 
 --- Frontend --
 
