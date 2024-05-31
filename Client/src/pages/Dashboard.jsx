@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Layout, Card, Row, Col } from "antd";
 import {
   FaTasks,
@@ -12,6 +13,32 @@ import MenuList from "../components/Sidebar/MenuList";
 const { Sider, Content } = Layout;
 
 const Dashboard = () => {
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    // Fetch tasks from the database
+    const fetchTasks = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/task/getAllTasks"
+        ); // Adjust the URL based on your API endpoint
+        setTasks(response.data);
+      } catch (error) {
+        // Handle error
+      }
+    };
+
+    fetchTasks();
+  }, []);
+
+  // Function to calculate the count of tasks for each status
+  const countTasksByStatus = (status) => {
+    return tasks.filter((task) => task.status === status).length;
+  };
+
+  // Calculate the count of total tasks
+  const totalTasks = tasks.length;
+
   return (
     <Layout>
       <Sider className="sidebar">
@@ -32,7 +59,9 @@ const Dashboard = () => {
                 bordered={false}
                 className="bg-[#1d4ed8] text-white"
               >
-                <p style={{ fontSize: "30px", fontWeight: "bold" }}>10</p>
+                <p style={{ fontSize: "30px", fontWeight: "bold" }}>
+                  {totalTasks}
+                </p>
               </Card>
             </Col>
             <Col xs={24} sm={12} md={6}>
@@ -46,7 +75,9 @@ const Dashboard = () => {
                 bordered={false}
                 className="bg-green-500 text-white"
               >
-                <p style={{ fontSize: "30px", fontWeight: "bold" }}>1</p>
+                <p style={{ fontSize: "30px", fontWeight: "bold" }}>
+                  {countTasksByStatus("Completed")}
+                </p>
               </Card>
             </Col>
             <Col xs={24} sm={12} md={6}>
@@ -60,7 +91,9 @@ const Dashboard = () => {
                 bordered={false}
                 className="bg-yellow-500 text-white"
               >
-                <p style={{ fontSize: "30px", fontWeight: "bold" }}>3</p>
+                <p style={{ fontSize: "30px", fontWeight: "bold" }}>
+                  {countTasksByStatus("Inprogress")}
+                </p>
               </Card>
             </Col>
             <Col xs={24} sm={12} md={6}>
@@ -74,7 +107,9 @@ const Dashboard = () => {
                 bordered={false}
                 className="bg-red-500 text-white"
               >
-                <p style={{ fontSize: "30px", fontWeight: "bold" }}>6</p>
+                <p style={{ fontSize: "30px", fontWeight: "bold" }}>
+                  {countTasksByStatus("Pending")}
+                </p>
               </Card>
             </Col>
           </Row>

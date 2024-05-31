@@ -12,6 +12,10 @@ const findById = async (id, session) => {
   }
 };
 
+const findAll = async (queryObj) => {
+  return await User.find(queryObj).sort({ createdAt: -1 });
+};
+
 const findByIdAndDelete = async (id, session) => {
   if (session) {
     return await User.findByIdAndDelete(id).session(session);
@@ -22,5 +26,6 @@ const findByIdAndDelete = async (id, session) => {
 module.exports = {
   save,
   findById,
+  findAll,
   findByIdAndDelete,
 };

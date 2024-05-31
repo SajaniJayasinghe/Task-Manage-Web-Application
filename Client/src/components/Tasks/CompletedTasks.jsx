@@ -3,6 +3,7 @@ import { Layout, Card, Row, Col, Button, Table, Pagination } from "antd";
 import { AppstoreOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import Logo from "../Sidebar/Logo";
 import MenuList from "../Sidebar/MenuList";
+import axios from "axios";
 
 const { Sider, Content } = Layout;
 
@@ -14,41 +15,7 @@ const TASK_TYPE = {
 };
 
 const CompletedTasks = () => {
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Completed Task 1",
-      description: "Description for completed task 1",
-      status: "completed",
-      createdate: "2024-05-01",
-      duedate: "2024-05-10",
-    },
-    {
-      id: 2,
-      title: "Completed Task 2",
-      description: "Description for completed task 2",
-      status: "completed",
-      createdate: "2024-05-02",
-      duedate: "2024-05-11",
-    },
-    {
-      id: 3,
-      title: "Completed Task 3",
-      description: "Description for completed task 3",
-      status: "completed",
-      createdate: "2024-05-03",
-      duedate: "2024-05-12",
-    },
-    {
-      id: 4,
-      title: "Completed Task 4",
-      description: "Description for completed task 4",
-      status: "completed",
-      createdate: "2024-05-03",
-      duedate: "2024-05-12",
-    },
-  ]);
-  // const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [view, setView] = useState("card");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 6; // Number of cards to show per page
@@ -74,19 +41,33 @@ const CompletedTasks = () => {
       key: "description",
     },
     {
+      title: "",
+      dataIndex: "",
+      key: "",
+      render: (text, record) => (
+        <span
+          className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.completed}`}
+          style={{ display: "flex" }}
+        ></span>
+      ),
+    },
+    {
       title: "Status",
       dataIndex: "status",
       key: "status",
     },
+
     {
       title: "Created Date",
-      dataIndex: "createdate",
-      key: "createdate",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (createdAt) => new Date(createdAt).toLocaleDateString(),
     },
     {
       title: "Due Date",
-      dataIndex: "duedate",
-      key: "duedate",
+      dataIndex: "dueDate",
+      key: "dueDate",
+      render: (dueDate) => new Date(dueDate).toLocaleDateString(),
     },
   ];
 
@@ -100,10 +81,12 @@ const CompletedTasks = () => {
     // Fetch tasks from the database
     const fetchTasks = async () => {
       try {
-        // const response = await axios.get("/api/tasks/getAllTasks");
+        const response = await axios.get(
+          "http://localhost:8080/api/v1/task/getAllTasks"
+        );
         const allTasks = response.data;
         const completedTasks = allTasks.filter(
-          (task) => task.status === "completed"
+          (task) => task.status === "Completed"
         );
         setTasks(completedTasks);
       } catch (error) {
@@ -155,17 +138,31 @@ const CompletedTasks = () => {
                 {paginatedTasks.map((task) => (
                   <Col span={8} key={task.id}>
                     <Card
-                      title={task.title}
+                      title={
+                        <span>
+                          <span
+                            className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.completed}`}
+                          />
+                          {task.title}
+                        </span>
+                      }
                       bordered={true}
                       style={{
                         borderColor: "black",
-                        backgroundColor: "#F8F6F0 ",
+                        backgroundColor: "#DBE9FA	",
                       }}
                     >
                       <p>{task.description}</p>
                       <p>Status: {task.status}</p>
-                      <p>Created Date: {task.createdate}</p>
-                      <p>Due Date: {task.duedate}</p>
+                      <p>
+                        Created Date:{" "}
+                        {new Date(task.createdAt).toLocaleDateString()}
+                      </p>
+
+                      <p>
+                        Completed Date:{" "}
+                        {new Date(task.dueDate).toLocaleDateString()}
+                      </p>
                     </Card>
                   </Col>
                 ))}

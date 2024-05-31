@@ -2,7 +2,16 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import MenuList from "../Sidebar/MenuList";
 import Logo from "../Sidebar/Logo";
-import { Layout, Button, Card, Row, Col, message, Modal } from "antd";
+import {
+  Layout,
+  Button,
+  Card,
+  Row,
+  Col,
+  message,
+  Modal,
+  Popconfirm,
+} from "antd";
 import {
   PlusOutlined,
   EditOutlined,
@@ -15,7 +24,6 @@ import EditTask from "./EditTasks";
 
 const { Sider, Content } = Layout;
 
-// Define TASK_TYPE object
 const TASK_TYPE = {
   todo: "bg-blue-600",
   inprogress: "bg-yellow-600",
@@ -24,97 +32,63 @@ const TASK_TYPE = {
 
 const TaskDetails = () => {
   const [open, setOpen] = useState(false);
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      title: "Test task",
-      status: "pending",
-      createdate: "2024-06-01",
-      duedate: "2024-06-10",
-      description: "Task manager youtube tutorial",
-    },
-    {
-      id: 1,
-      title: "Website Project Proposal Review",
-      status: "completed",
-      createdate: "2024-06-01",
-      duedate: "2024-06-10",
-      description: "Blog App Dashboard",
-    },
-  ]);
-
+  const [tasks, setTasks] = useState([]);
   const [editTask, setEditTask] = useState(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
 
-  // useEffect(() => {
-  //   // Fetch tasks from the database
-  //   const fetchTasks = async () => {
-  //     try {
-  //       const response = await axios.get("/api/tasks/getAllTasks"); // Adjust the URL based on your API endpoint
-  //       setTasks(response.data);
-  //     } catch (error) {
-  //       message.error("Failed to fetch tasks from the database");
-  //     }
-  //   };
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
-  //   fetchTasks();
-  // }, []);
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/task/getAllTasks"
+      );
+      setTasks(response.data);
+    } catch (error) {
+      message.error("Failed to fetch tasks from the database");
+    }
+  };
 
-  // Function to toggle the modal visibility
   const toggleModal = () => {
     setOpen(!open);
   };
 
-  // Function to handle task creation
   const handleCreateTask = (newTask) => {
     setTasks([...tasks, newTask]);
   };
 
-  // Function to handle task editing
   const handleEditTask = (updatedTask) => {
     setTasks(
       tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
     );
   };
-  // Function to handle task deletion
-  const handleDeleteTask = (taskId) => {
-    setTasks(
-      tasks.map((task) =>
-        task.id === taskId ? { ...task, status: "trash" } : task
-      )
-    );
-    setIsDeleteModalOpen(false);
-  };
 
-  // Function to schedule due date reminders using node-cron
-  const scheduleDueDateReminders = () => {
-    // Schedule a task to check due dates every day at 8 AM
-    cron.schedule("0 8 * * *", () => {
-      // Logic to check due dates and trigger notifications
-      const today = new Date().toISOString().split("T")[0]; // Get today's date
-      const overdueTasks = tasks.filter((task) => task.duedate === today);
-      if (overdueTasks.length > 0) {
-        // Increment notification count
-        setNotificationCount(notificationCount + overdueTasks.length);
-        // Trigger notification to the user
-        // You can use a notification library like Ant Design's notification or any other notification mechanism
-        // Example:
-        message.info(`${overdueTasks.length} task(s) are due today.`);
+  const handleDeleteTask = async (id) => {
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/api/v1/task/deleteTask/${id}`
+      );
+      if (response.status === 200) {
+        setTasks(tasks.filter((task) => task.id !== taskToDelete.id));
+        message.success("Task deleted successfully");
+        setIsDeleteModalOpen(false);
+      } else {
+        message.error("Failed to delete the task");
       }
-    });
+    } catch (error) {
+      message.error("Failed to delete the task");
+    }
   };
 
-  // Function to format the date
   const formatDate = (dateString) => {
     const options = { day: "numeric", month: "short", year: "numeric" };
     const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleString("default", { month: "short" });
-    const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+    return date.toLocaleDateString(undefined, options);
   };
 
   return (
@@ -132,8 +106,22 @@ const TaskDetails = () => {
               alignItems: "center",
             }}
           >
-            <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>Tasks</h1>
+            <h1
+              style={{
+                fontSize: "28px",
+                fontWeight: "bold",
+                marginLeft: "8px",
+                marginTop: "10px",
+              }}
+            >
+              Tasks
+            </h1>
             <div>
+              <Button
+                type="link"
+                className="custom-bell-button"
+                icon={<BellOutlined style={{ fontSize: "25px" }} />}
+              ></Button>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -142,256 +130,122 @@ const TaskDetails = () => {
               >
                 Create Task
               </Button>
-              <Button
-                type="link"
-                className="custom-bell-button"
-                icon={<BellOutlined />}
-                // onClick=
-              >
-                {notificationCount > 0 && (
-                  <span className="notification-count">
-                    {notificationCount}
-                  </span>
-                )}
-              </Button>
             </div>
-            {open && <CreateTasks open={open} setOpen={setOpen} />}
+            {open && (
+              <CreateTasks open={open} setOpen={setOpen} getTask={fetchTasks} />
+            )}
           </div>
           <div style={{ marginTop: "50px" }}>
             <Row gutter={[16, 16]}>
-              <Col span={8}>
-                <Card
-                  title={
-                    <span>
-                      <span
-                        className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.todo}`}
-                      />
-                      To Do
-                    </span>
-                  }
-                  bordered={false}
-                >
-                  {tasks
-                    .filter((task) => task.status === "pending")
-                    .map((task) => (
-                      <Card
-                        key={task.id}
-                        style={{
-                          marginBottom: "16px",
-                          position: "relative",
-                          borderColor: "black",
-                        }}
-                        title={
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div>
-                              <span
-                                className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.todo}`}
-                              />
-                              {task.title}
-                              <div style={{ fontSize: "14px", color: "#999" }}>
-                                Due Date: {formatDate(task.duedate)}
-                              </div>
-                            </div>
+              {["Pending", "Inprogress", "Completed"].map((status, index) => (
+                <Col span={8} key={index}>
+                  <Card
+                    style={{
+                      backgroundColor:
+                        status === "Pending"
+                          ? "#D5D6EA"
+                          : status === "Inprogress"
+                          ? "#C9DFEC"
+                          : "#DBE9FA",
+                    }}
+                    title={
+                      <span>
+                        <span
+                          className={`rounded-full w-3 h-3 inline-block mr-2 ${
+                            TASK_TYPE[status.toLowerCase()]
+                          }`}
+                        />
+                        {status}
+                      </span>
+                    }
+                    bordered={false}
+                  >
+                    {tasks
+                      .filter((task) => task.status === status)
+                      .map((task) => (
+                        <Card
+                          key={task.id}
+                          style={{
+                            marginBottom: "16px",
+                            position: "relative",
+                            borderColor: "black",
+                          }}
+                          title={
                             <div
                               style={{
-                                position: "absolute",
-                                right: "8px",
-                                bottom: "8px",
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                marginTop: "10px",
                               }}
                             >
-                              <Button
-                                type="link"
-                                icon={
-                                  <EditOutlined style={{ color: "green" }} />
-                                }
-                                onClick={() => {
-                                  setEditTask(task);
-                                  setIsEditModalOpen(true);
+                              <div>
+                                <span
+                                  className={`rounded-full w-3 h-3 inline-block mr-2 ${
+                                    TASK_TYPE[status.toLowerCase()]
+                                  }`}
+                                />
+                                {task.title}
+                                <div
+                                  style={{ fontSize: "14px", color: "#999" }}
+                                >
+                                  Due Date:{" "}
+                                  {new Date(task.dueDate).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div
+                                style={{
+                                  position: "absolute",
+                                  right: "8px",
+                                  bottom: "8px",
                                 }}
-                              />
-                              <Button
-                                type="link"
-                                icon={
-                                  <DeleteOutlined style={{ color: "red" }} />
-                                }
-                                onClick={() => {
-                                  setTaskToDelete(task);
-                                  setIsDeleteModalOpen(true);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        }
-                      >
-                        <p>{task.description}</p>
-                        <div style={{ fontSize: "14px", color: "#999" }}>
-                          Created Date: {formatDate(task.createdate)}
-                        </div>
-                      </Card>
-                    ))}
-                </Card>
-              </Col>
-
-              <Col span={8}>
-                <Card
-                  title={
-                    <span>
-                      <span
-                        className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.inprogress}`}
-                      />
-                      In Progress
-                    </span>
-                  }
-                  bordered={false}
-                >
-                  {tasks
-                    .filter((task) => task.status === "inprogress")
-                    .map((task) => (
-                      <Card
-                        key={task.id}
-                        style={{
-                          marginBottom: "16px",
-                          position: "relative",
-                        }}
-                        title={
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div>
-                              <span
-                                className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.inprogress}`}
-                              />
-                              {task.title}
-                              <div style={{ fontSize: "14px", color: "#999" }}>
-                                Due Date: {formatDate(task.duedate)}
+                              >
+                                <Button
+                                  type="link"
+                                  icon={
+                                    <EditOutlined style={{ color: "green" }} />
+                                  }
+                                  onClick={() => {
+                                    setEditTask(task);
+                                    setIsEditModalOpen(true);
+                                  }}
+                                />
+                                <Popconfirm
+                                  title="Delete the task"
+                                  description="Are you sure to delete this task?"
+                                  onConfirm={() => {
+                                    handleDeleteTask(task._id);
+                                  }}
+                                  onCancel={() => {}}
+                                  okText="Yes"
+                                  cancelText="No"
+                                >
+                                  <Button
+                                    type="link"
+                                    icon={
+                                      <DeleteOutlined
+                                        style={{ color: "red" }}
+                                      />
+                                    }
+                                    onClick={() => {
+                                      setTaskToDelete(task);
+                                      setIsDeleteModalOpen(true);
+                                    }}
+                                  />
+                                </Popconfirm>
                               </div>
                             </div>
-                            <div
-                              style={{
-                                position: "absolute",
-                                right: "8px",
-                                bottom: "8px",
-                              }}
-                            >
-                              <Button
-                                type="link"
-                                icon={
-                                  <EditOutlined style={{ color: "green" }} />
-                                }
-                                onClick={() => {
-                                  setEditTask(task);
-                                  setIsEditModalOpen(true);
-                                }}
-                              />
-                              <Button
-                                type="link"
-                                icon={
-                                  <DeleteOutlined style={{ color: "red" }} />
-                                }
-                                onClick={() => {
-                                  setTaskToDelete(task);
-                                  setIsDeleteModalOpen(true);
-                                }}
-                              />
-                            </div>
+                          }
+                        >
+                          <p>{task.description}</p>
+                          <div style={{ fontSize: "14px", color: "#999" }}>
+                            {new Date(task.createdAt).toLocaleDateString()}
                           </div>
-                        }
-                      >
-                        <p>{task.description}</p>
-
-                        <div style={{ fontSize: "14px", color: "#999" }}>
-                          Created Date: {formatDate(task.createdate)}
-                        </div>
-                      </Card>
-                    ))}
-                </Card>
-              </Col>
-
-              <Col span={8}>
-                <Card
-                  title={
-                    <span>
-                      <span
-                        className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.completed}`}
-                      />
-                      Completed
-                    </span>
-                  }
-                  bordered={false}
-                >
-                  {tasks
-                    .filter((task) => task.status === "completed")
-                    .map((task) => (
-                      <Card
-                        key={task.id}
-                        style={{ marginBottom: "16px", position: "relative" }}
-                        title={
-                          <div
-                            style={{
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                            }}
-                          >
-                            <div>
-                              <span
-                                className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.completed}`}
-                              />
-                              {task.title}
-                              <div style={{ fontSize: "14px", color: "#999" }}>
-                                Due Date: {formatDate(task.duedate)}
-                              </div>
-                            </div>
-                            <div
-                              style={{
-                                position: "absolute",
-                                right: "8px",
-                                bottom: "8px",
-                              }}
-                            >
-                              <Button
-                                type="link"
-                                icon={
-                                  <EditOutlined style={{ color: "green" }} />
-                                }
-                                onClick={() => {
-                                  setEditTask(task);
-                                  setIsEditModalOpen(true);
-                                }}
-                              />
-                              <Button
-                                type="link"
-                                icon={
-                                  <DeleteOutlined style={{ color: "red" }} />
-                                }
-                                onClick={() => {
-                                  setTaskToDelete(task);
-                                  setIsDeleteModalOpen(true);
-                                }}
-                              />
-                            </div>
-                          </div>
-                        }
-                      >
-                        <p>{task.description}</p>
-
-                        <div style={{ fontSize: "14px", color: "#999" }}>
-                          Created Date: {formatDate(task.createdate)}
-                        </div>
-                      </Card>
-                    ))}
-                </Card>
-              </Col>
+                        </Card>
+                      ))}
+                  </Card>
+                </Col>
+              ))}
             </Row>
           </div>
         </Content>
@@ -404,24 +258,6 @@ const TaskDetails = () => {
           handleEditTask={handleEditTask}
         />
       )}
-      <Modal
-        title={
-          <span>
-            <ExclamationCircleOutlined
-              style={{ color: "red", marginRight: 8 }}
-            />
-            Confirm Deletion
-          </span>
-        }
-        visible={isDeleteModalOpen}
-        onOk={() => handleDeleteTask(taskToDelete.id)}
-        onCancel={() => setIsDeleteModalOpen(false)}
-        okText="Confirm"
-        cancelText="Cancel"
-        okButtonProps={{ style: { background: "red", borderColor: "red" } }} // Change the OK button color to red
-      >
-        <p>Are you sure you want to delete this task?</p>
-      </Modal>
     </Layout>
   );
 };

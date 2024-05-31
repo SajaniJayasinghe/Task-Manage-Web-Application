@@ -2,6 +2,7 @@ const { StatusCodes } = require("http-status-codes");
 const { startSession } = require("mongoose");
 const Task = require("./task.model");
 const TaskService = require("./task.service");
+const User = require("../user/user.model");
 
 // Create a new task
 const CreateTask = async (req, res) => {
@@ -10,10 +11,7 @@ const CreateTask = async (req, res) => {
     //start transaction
     session.startTransaction();
     // Extract data from the request body
-    const { title, description, status, dueDate } = req.body;
-
-    // Get the user ID from the authenticated user
-    const userId = req.auth.id;
+    const { title, description, status, dueDate, user } = req.body;
 
     // Construct task data object
     const taskData = {
@@ -21,7 +19,7 @@ const CreateTask = async (req, res) => {
       description: description,
       status: status,
       dueDate: dueDate,
-      user: userId,
+      user: user,
     };
 
     // Create a new task instance with the constructed task data
@@ -117,10 +115,24 @@ const DeleteTask = async (req, res) => {
   }
 };
 
+// Function to get all user usernames
+const getAllUsernames = async (req, res) => {
+  try {
+    const users = await User.find({}, { username: 1 }); // Fetch only the username field
+    const usernames = users.map((user) => user.username); // Extract usernames
+    res.status(StatusCodes.OK).json(usernames);
+  } catch (error) {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: error.message });
+  }
+};
+
 module.exports = {
   CreateTask,
   GetAllTasks,
   GetTaskById,
   UpdateTask,
   DeleteTask,
+  getAllUsernames,
 };

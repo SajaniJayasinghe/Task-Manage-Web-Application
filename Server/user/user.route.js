@@ -11,6 +11,8 @@ UserRouter.get(
   authMiddleware.authorize(),
   userController.GetUserProfile
 );
+// Get all users
+UserRouter.get("/getallusers", userController.GetAllUsers);
 
 UserRouter.delete(
   "/deleteProfile",

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Button, Select } from "antd";
+import { Modal, Form, Input, Select } from "antd";
+import axios from "axios";
 
 const { Option } = Select;
 
 const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
   const [form] = Form.useForm();
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     if (task) {
@@ -18,16 +20,41 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
     }
   }, [task, form]);
 
-  const handleOk = () => {
-    form.validateFields().then((values) => {
+  // useEffect(() => {
+  //   // Fetch all users when component mounts
+  //   getAllUsers();
+  // }, []);
+
+  // Function to fetch all users
+  // const getAllUsers = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://localhost:8080/api/v1/user/getallusers"
+  //     );
+  //     setUsers(response.data); // Set the users state with fetched data
+  //   } catch (error) {
+  //     console.error("Error fetching users:", error);
+  //   }
+  // };
+
+  const handleOk = async () => {
+    try {
+      const values = await form.validateFields();
       const updatedTask = {
         ...task,
         ...values,
       };
+      await axios.put(
+        `http://localhost:8080/api/v1/task/updateTask/${task._id}`,
+        updatedTask
+      );
       handleEditTask(updatedTask);
       form.resetFields(); // Reset form fields after submission
       setOpen(false); // Close the modal after submission
-    });
+    } catch (error) {
+      console.error("Error updating task:", error);
+      // Handle error case here
+    }
   };
 
   const handleCancel = () => {
@@ -88,7 +115,11 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
             style={{ flex: 1, marginRight: 8 }}
           >
             <Select placeholder="Select a user">
-              {/* Options for users */}
+              {users.map((user) => (
+                <Option key={user._id} value={user._id}>
+                  {user.username}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
           <Form.Item

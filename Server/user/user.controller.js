@@ -53,6 +53,17 @@ const CreateUser = async (req, res) => {
     session.endSession();
   }
 };
+// Get all users
+const GetAllUsers = async (req, res) => {
+  try {
+    const users = await UserService.findAll();
+    return res.status(StatusCodes.OK).json({
+      users,
+    });
+  } catch (error) {
+    throw new BadRequestError("Failed to fetch users");
+  }
+};
 
 // Get user profile
 const GetUserProfile = async (req, res) => {
@@ -106,4 +117,4 @@ const DeleteUserProfile = async (req, res) => {
   });
 };
 
-module.exports = { CreateUser, GetUserProfile, DeleteUserProfile };
+module.exports = { CreateUser, GetUserProfile, DeleteUserProfile, GetAllUsers };

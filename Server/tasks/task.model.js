@@ -13,8 +13,8 @@ const TaskSchema = mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["pending", "inprogress", "completed"],
-      default: "pending",
+      enum: ["Pending", "Inprogress", "Completed"],
+      default: "Pending",
     },
     dueDate: {
       type: Date,
@@ -22,8 +22,8 @@ const TaskSchema = mongoose.Schema(
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // Reference to User model
-      required: true,
+      ref: "User",
+      required: [false, "User is required"],
     },
   },
   { timestamps: true }

@@ -1,21 +1,56 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Button, Select } from "antd";
+import axios from "axios";
 
 const { Option } = Select;
 
-const CreateTaskForm = ({ open, setOpen }) => {
+const CreateTaskForm = ({ open, setOpen, getTask }) => {
   const [form] = Form.useForm();
+  const [users, setUsers] = useState([]);
 
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
 
-  const handleOk = () => {
-    form.validateFields().then((values) => {
-      // Handle form submission logic here
+  useEffect(() => {
+    // Fetch all users when component mounts
+    getAllUsers();
+  }, []);
+
+  // Function to fetch all users
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/user/getallusers"
+      );
+      let users = response.data.users.map((user) => ({
+        label: user.username,
+        value: user._id,
+      }));
+      setUsers(users); // Set the users state with fetched data
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  // Function to handle form submission
+  const handleSubmit = async () => {
+    try {
+      const values = form.getFieldsValue();
       console.log("Form values:", values);
-      form.resetFields(); // Reset form fields after submission
-      setOpen(false); // Close the modal after submission
-    });
+
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/task/createTask",
+        values
+      );
+      console.log("Task created:", response.data);
+
+      form.resetFields(); // Reset form fields after successful submission
+      setOpen(false); // Close the modal after successful submission
+      getTask(); // Fetch all tasks to update the tasks list
+    } catch (error) {
+      console.error("Error creating task:", error);
+      // Handle error case here
+    }
   };
 
   const handleCancel = () => {
@@ -27,7 +62,7 @@ const CreateTaskForm = ({ open, setOpen }) => {
     <Modal
       title={<span style={{ fontWeight: "bold" }}>ADD TASK</span>}
       visible={open}
-      onOk={handleOk}
+      onOk={handleSubmit} // Call handleSubmit function on OK button click
       onCancel={handleCancel}
       okText="Submit" // Rename OK button to Submit
       cancelText="Cancel"
@@ -43,7 +78,7 @@ const CreateTaskForm = ({ open, setOpen }) => {
           label={<span style={{ fontSize: "16px" }}>Task Title :</span>}
           rules={[{ required: true, message: "Title is required!" }]}
         >
-          <Input placeholder="Enter task name" />
+          <Input placeholder="Enter task title" />
         </Form.Item>
         <Form.Item name="description" label="Description :">
           <Input.TextArea placeholder="Enter task description" />
@@ -73,20 +108,18 @@ const CreateTaskForm = ({ open, setOpen }) => {
             rules={[{ required: true, message: "Please select a user!" }]}
             style={{ flex: 1, marginRight: 8 }}
           >
-            <Select placeholder="Select a user">
-              {/* Options for users */}
-            </Select>
+            <Select placeholder="Select a user" options={users}></Select>
           </Form.Item>
           <Form.Item
             name="status"
             label={<span style={{ fontSize: "16px" }}>Task Stage :</span>}
-            initialValue="To Do"
+            initialValue="Pending"
             style={{ flex: 1, marginLeft: 8 }}
           >
             <Select placeholder="Select a Status">
-              <Option value="pending">To Do</Option>
-              <Option value="inprogress">In Progress</Option>
-              <Option value="completed">Completed</Option>
+              <Option value="Pending">To Do</Option>
+              <Option value="Inprogress">In Progress</Option>
+              <Option value="Completed">Completed</Option>
             </Select>
           </Form.Item>
         </div>
