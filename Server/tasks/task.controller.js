@@ -47,10 +47,10 @@ const CreateTask = async (req, res) => {
   }
 };
 
-//Get all tasks
+// Get all tasks
 const GetAllTasks = async (req, res) => {
   try {
-    const tasks = await TaskService.findAll({ user: req.auth.id });
+    const tasks = await TaskService.findAll();
     res.status(StatusCodes.OK).json(tasks);
   } catch (error) {
     res

@@ -12,11 +12,7 @@ TaskRouter.post(
 );
 
 // Route for getting all tasks
-TaskRouter.get(
-  "/getAllTasks",
-  authMiddleware.authorize(),
-  taskController.GetAllTasks
-);
+TaskRouter.get("/getAllTasks", taskController.GetAllTasks);
 
 // Route for getting a task by ID
 TaskRouter.get(
