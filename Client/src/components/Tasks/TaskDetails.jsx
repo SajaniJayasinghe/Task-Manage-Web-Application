@@ -28,7 +28,7 @@ const TaskDetails = () => {
     {
       id: 1,
       title: "Test task",
-      status: "inprogress",
+      status: "pending",
       createdate: "2024-06-01",
       duedate: "2024-06-10",
       description: "Task manager youtube tutorial",
