@@ -5,6 +5,7 @@ import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import CreateTasks from "./components/Tasks/CreateTasks";
 import TaskDetails from "./components/Tasks/TaskDetails";
+import CompletedTasks from "./components/Tasks/CompletedTasks";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/createtasks" element={<CreateTasks />} />
       <Route path="/taskdetails" element={<TaskDetails />} />
+      <Route path="/completedtasks" element={<CompletedTasks />} />
     </Routes>
   );
 }

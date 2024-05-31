@@ -5,15 +5,17 @@ import {
   SettingOutlined,
   AreaChartOutlined,
 } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FaTasks, FaTrashAlt, FaUsers } from "react-icons/fa";
 import { MdTaskAlt, MdOutlinePendingActions } from "react-icons/md";
 
 const MenuList = () => {
   const [selectedKeys, setSelectedKeys] = useState(["dashboard"]);
+  const navigate = useNavigate();
 
   const handleMenuSelect = (e) => {
     setSelectedKeys([e.key]);
+    navigate(e.key);
   };
 
   return (
@@ -21,30 +23,30 @@ const MenuList = () => {
       theme="dark"
       className="menu-bar"
       selectedKeys={selectedKeys}
-      onSelect={handleMenuSelect}
+      onClick={handleMenuSelect}
     >
-      <Menu.Item key="dashboard" icon={<HomeOutlined />}>
-        <Link to="/dashboard">Dashboard</Link>
+      <Menu.Item key="/dashboard" icon={<HomeOutlined />}>
+        Dashboard
       </Menu.Item>
-      <Menu.Item key="tasks" icon={<FaTasks />}>
-        <Link to="/taskdetails">Tasks</Link>
+      <Menu.Item key="/taskdetails" icon={<FaTasks />}>
+        Tasks
       </Menu.Item>
-      <Menu.Item key="complete" icon={<MdTaskAlt />}>
+      <Menu.Item key="/completedtasks" icon={<MdTaskAlt />}>
         Completed
       </Menu.Item>
-      <Menu.Item key="inprogress" icon={<AreaChartOutlined />}>
+      <Menu.Item key="/inprogress" icon={<AreaChartOutlined />}>
         In Progress
       </Menu.Item>
-      <Menu.Item key="pending" icon={<MdOutlinePendingActions />}>
+      <Menu.Item key="/pending" icon={<MdOutlinePendingActions />}>
         To Do
       </Menu.Item>
-      <Menu.Item key="user" icon={<FaUsers />}>
+      <Menu.Item key="/team" icon={<FaUsers />}>
         Team
       </Menu.Item>
-      <Menu.Item key="trashed" icon={<FaTrashAlt />}>
+      <Menu.Item key="/trashed" icon={<FaTrashAlt />}>
         Trash
       </Menu.Item>
-      <Menu.Item key="setting" icon={<SettingOutlined />}>
+      <Menu.Item key="/setting" icon={<SettingOutlined />}>
         Setting
       </Menu.Item>
     </Menu>
