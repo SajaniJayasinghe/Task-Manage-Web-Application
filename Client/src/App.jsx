@@ -6,6 +6,7 @@ import Dashboard from "./pages/Dashboard";
 import CreateTasks from "./components/Tasks/CreateTasks";
 import TaskDetails from "./components/Tasks/TaskDetails";
 import CompletedTasks from "./components/Tasks/CompletedTasks";
+import EditTasks from "./components/Tasks/EditTasks";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route path="/createtasks" element={<CreateTasks />} />
       <Route path="/taskdetails" element={<TaskDetails />} />
       <Route path="/completedtasks" element={<CompletedTasks />} />
+      <Route path="/edittask" element={<EditTasks />} />
     </Routes>
   );
 }

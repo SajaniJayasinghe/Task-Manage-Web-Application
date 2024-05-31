@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import MenuList from "../Sidebar/MenuList";
 import Logo from "../Sidebar/Logo";
-import { Layout, Button, Card, Row, Col } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { Layout, Button, Card, Row, Col, message } from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import CreateTasks from "../Tasks/CreateTasks";
+import EditTask from "./EditTasks";
 
 const { Sider, Content } = Layout;
 
@@ -20,36 +22,37 @@ const TaskDetails = () => {
     {
       id: 1,
       title: "Test task",
-      status: "todo",
+      status: "inprogress",
       createdate: "2024-06-01",
       duedate: "2024-06-10",
       description: "Task manager youtube tutorial",
     },
     {
-      id: 4,
-      title: "Duplicate - Duplicate - Review Code",
-      status: "todo",
-      createdate: "2024-06-02",
-      duedate: "2024-06-12",
-      description: "Blog App Admin Dashboard",
-    },
-    {
-      id: 2,
-      title: "Task 2",
-      status: "inprogress",
-      createdate: "2024-06-03",
-      duedate: "2024-06-15",
+      id: 1,
+      title: "Website Project Proposal Review",
+      status: "completed",
+      createdate: "2024-06-01",
+      duedate: "2024-06-10",
       description: "Blog App Dashboard",
     },
-    {
-      id: 3,
-      title: "Bug Fixing",
-      status: "completed",
-      createdate: "2024-06-04",
-      duedate: "2024-06-20",
-      description: "Check Login code and fix bugs asap",
-    },
   ]);
+
+  const [editTask, setEditTask] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  // useEffect(() => {
+  //   // Fetch tasks from the database
+  //   const fetchTasks = async () => {
+  //     try {
+  //       const response = await axios.get("/api/tasks/getAllTasks"); // Adjust the URL based on your API endpoint
+  //       setTasks(response.data);
+  //     } catch (error) {
+  //       message.error("Failed to fetch tasks from the database");
+  //     }
+  //   };
+
+  //   fetchTasks();
+  // }, []);
 
   // Function to toggle the modal visibility
   const toggleModal = () => {
@@ -59,6 +62,13 @@ const TaskDetails = () => {
   // Function to handle task creation
   const handleCreateTask = (newTask) => {
     setTasks([...tasks, newTask]);
+  };
+
+  // Function to handle task editing
+  const handleEditTask = (updatedTask) => {
+    setTasks(
+      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
   };
 
   // Function to format the date
@@ -105,38 +115,66 @@ const TaskDetails = () => {
                   }
                   bordered={false}
                 >
-                  {tasks.map((task) => {
-                    if (task.status === "todo") {
-                      return (
-                        <Card
-                          key={task.id}
-                          style={{ marginBottom: "16px" }}
-                          title={
+                  {tasks
+                    .filter((task) => task.status === "pending")
+                    .map((task) => (
+                      <Card
+                        key={task.id}
+                        style={{ marginBottom: "16px", position: "relative" }}
+                        title={
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
                             <div>
-                              <div>
-                                {" "}
-                                <span
-                                  className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.todo}`}
-                                />
-                                {task.title}
-                              </div>
+                              <span
+                                className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.todo}`}
+                              />
+                              {task.title}
                               <div style={{ fontSize: "14px", color: "#999" }}>
-                                Due Date : {formatDate(task.duedate)}
+                                Due Date: {formatDate(task.duedate)}
                               </div>
                             </div>
-                          }
-                        >
-                          <p> {task.description}</p>
-                          <div style={{ fontSize: "14px", color: "#999" }}>
-                            {formatDate(task.createdate)}
+                            <div
+                              style={{
+                                position: "absolute",
+                                right: "8px",
+                                bottom: "8px",
+                              }}
+                            >
+                              <Button
+                                type="link"
+                                icon={
+                                  <EditOutlined style={{ color: "green" }} />
+                                }
+                                onClick={() => {
+                                  setEditTask(task);
+                                  setIsEditModalOpen(true);
+                                }}
+                              />
+                              <Button
+                                type="link"
+                                icon={
+                                  <DeleteOutlined style={{ color: "red" }} />
+                                }
+                                // onClick={() => handleDeleteTask(task.id)}
+                              />
+                            </div>
                           </div>
-                        </Card>
-                      );
-                    }
-                    return null;
-                  })}
+                        }
+                      >
+                        <p>{task.description}</p>
+                        <div style={{ fontSize: "14px", color: "#999" }}>
+                          Created Date: {formatDate(task.createdate)}
+                        </div>
+                      </Card>
+                    ))}
                 </Card>
               </Col>
+
               <Col span={8}>
                 <Card
                   title={
@@ -149,38 +187,67 @@ const TaskDetails = () => {
                   }
                   bordered={false}
                 >
-                  {tasks.map((task) => {
-                    if (task.status === "inprogress") {
-                      return (
-                        <Card
-                          key={task.id}
-                          style={{ marginBottom: "16px" }}
-                          title={
+                  {tasks
+                    .filter((task) => task.status === "inprogress")
+                    .map((task) => (
+                      <Card
+                        key={task.id}
+                        style={{ marginBottom: "16px", position: "relative" }}
+                        title={
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
                             <div>
-                              <div>
-                                {" "}
-                                <span
-                                  className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.inprogress}`}
-                                />
-                                {task.title}
-                              </div>
+                              <span
+                                className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.inprogress}`}
+                              />
+                              {task.title}
                               <div style={{ fontSize: "14px", color: "#999" }}>
-                                Due Date : {formatDate(task.duedate)}
+                                Due Date: {formatDate(task.duedate)}
                               </div>
                             </div>
-                          }
-                        >
-                          <p> {task.description}</p>
-                          <div style={{ fontSize: "14px", color: "#999" }}>
-                            {formatDate(task.createdate)}
+                            <div
+                              style={{
+                                position: "absolute",
+                                right: "8px",
+                                bottom: "8px",
+                              }}
+                            >
+                              <Button
+                                type="link"
+                                icon={
+                                  <EditOutlined style={{ color: "green" }} />
+                                }
+                                onClick={() => {
+                                  setEditTask(task);
+                                  setIsEditModalOpen(true);
+                                }}
+                              />
+                              <Button
+                                type="link"
+                                icon={
+                                  <DeleteOutlined style={{ color: "red" }} />
+                                }
+                                // onClick={() => handleDeleteTask(task.id)}
+                              />
+                            </div>
                           </div>
-                        </Card>
-                      );
-                    }
-                    return null;
-                  })}
+                        }
+                      >
+                        <p>{task.description}</p>
+
+                        <div style={{ fontSize: "14px", color: "#999" }}>
+                          Created Date: {formatDate(task.createdate)}
+                        </div>
+                      </Card>
+                    ))}
                 </Card>
               </Col>
+
               <Col span={8}>
                 <Card
                   title={
@@ -193,42 +260,78 @@ const TaskDetails = () => {
                   }
                   bordered={false}
                 >
-                  {tasks.map((task) => {
-                    if (task.status === "completed") {
-                      return (
-                        <Card
-                          key={task.id}
-                          style={{ marginBottom: "16px" }}
-                          title={
+                  {tasks
+                    .filter((task) => task.status === "completed")
+                    .map((task) => (
+                      <Card
+                        key={task.id}
+                        style={{ marginBottom: "16px", position: "relative" }}
+                        title={
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
                             <div>
-                              <div>
-                                {" "}
-                                <span
-                                  className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.completed}`}
-                                />
-                                {task.title}
-                              </div>
+                              <span
+                                className={`rounded-full w-3 h-3 inline-block mr-2 ${TASK_TYPE.completed}`}
+                              />
+                              {task.title}
                               <div style={{ fontSize: "14px", color: "#999" }}>
-                                Due Date : {formatDate(task.duedate)}
+                                Due Date: {formatDate(task.duedate)}
                               </div>
                             </div>
-                          }
-                        >
-                          <p> {task.description}</p>
-                          <div style={{ fontSize: "14px", color: "#999" }}>
-                            {formatDate(task.createdate)}
+                            <div
+                              style={{
+                                position: "absolute",
+                                right: "8px",
+                                bottom: "8px",
+                              }}
+                            >
+                              <Button
+                                type="link"
+                                icon={
+                                  <EditOutlined style={{ color: "green" }} />
+                                }
+                                onClick={() => {
+                                  setEditTask(task);
+                                  setIsEditModalOpen(true);
+                                }}
+                              />
+                              <Button
+                                type="link"
+                                icon={
+                                  <DeleteOutlined style={{ color: "red" }} />
+                                }
+                                // onClick={() => handleDeleteTask(task.id)}
+                              />
+                            </div>
                           </div>
-                        </Card>
-                      );
-                    }
-                    return null;
-                  })}
+                        }
+                      >
+                        <p>{task.description}</p>
+
+                        <div style={{ fontSize: "14px", color: "#999" }}>
+                          Created Date: {formatDate(task.createdate)}
+                        </div>
+                      </Card>
+                    ))}
                 </Card>
               </Col>
             </Row>
           </div>
         </Content>
       </Layout>
+      {editTask && (
+        <EditTask
+          open={isEditModalOpen}
+          setOpen={setIsEditModalOpen}
+          task={editTask}
+          handleEditTask={handleEditTask}
+        />
+      )}
     </Layout>
   );
 };
