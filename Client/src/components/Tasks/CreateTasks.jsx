@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Button, Select } from "antd";
+import { Modal, Form, Input, Button, Select, DatePicker } from "antd";
 import axios from "axios";
 
 const { Option } = Select;
@@ -97,7 +97,7 @@ const CreateTaskForm = ({ open, setOpen, getTask }) => {
             rules={[{ required: true, message: "Date is required!" }]}
             style={{ flex: 1, marginLeft: 8 }}
           >
-            <Input type="date" />
+            <DatePicker style={{ width: "100%" }} />
           </Form.Item>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>

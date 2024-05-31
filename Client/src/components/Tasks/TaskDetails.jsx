@@ -25,7 +25,7 @@ import EditTask from "./EditTasks";
 const { Sider, Content } = Layout;
 
 const TASK_TYPE = {
-  todo: "bg-blue-600",
+  pending: "bg-blue-600",
   inprogress: "bg-yellow-600",
   completed: "bg-green-600",
 };

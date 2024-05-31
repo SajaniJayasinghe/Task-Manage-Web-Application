@@ -29,12 +29,18 @@ const TeamMembers = () => {
 
   const columns = [
     {
-      title: "Full Name",
+      title: (
+        <span style={{ fontWeight: "bold", fontSize: "15px" }}>Full Name</span>
+      ),
       dataIndex: "username",
       key: "username",
     },
     {
-      title: "Email",
+      title: (
+        <span style={{ fontWeight: "bold", fontSize: "15px" }}>
+          Email Address
+        </span>
+      ),
       dataIndex: "email",
       key: "email",
     },

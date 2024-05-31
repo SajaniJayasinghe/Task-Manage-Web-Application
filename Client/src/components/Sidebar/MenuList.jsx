@@ -50,12 +50,12 @@ const MenuList = () => {
       label: "Team",
     },
     {
-      key: "/profile",
+      key: "#",
       icon: <FaUser />,
       label: "Profile",
     },
     {
-      key: "/setting",
+      key: "#",
       icon: <SettingOutlined />,
       label: "Setting",
     },

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Layout, Card, Row, Col } from "antd";
+import { Layout, Card, Row, Col, Flex, Progress } from "antd";
 import {
   FaTasks,
   FaCheckCircle,
@@ -9,6 +9,7 @@ import {
 } from "react-icons/fa";
 import Logo from "../components/Sidebar/Logo";
 import MenuList from "../components/Sidebar/MenuList";
+import DashBoardTasks from "../components/Tasks/DashBoardTasks";
 
 const { Sider, Content } = Layout;
 
@@ -114,6 +115,7 @@ const Dashboard = () => {
             </Col>
           </Row>
         </Content>
+        <DashBoardTasks />
       </Layout>
     </Layout>
   );
