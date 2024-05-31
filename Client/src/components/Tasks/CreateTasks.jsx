@@ -12,7 +12,6 @@ const CreateTaskForm = ({ open, setOpen, getTask }) => {
   const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
-    // Fetch all users when component mounts
     getAllUsers();
   }, []);
 

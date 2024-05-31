@@ -9,33 +9,24 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    if (task) {
-      form.setFieldsValue({
-        title: task.title,
-        description: task.description,
-        dueDate: task.dueDate,
-        user: task.user,
-        status: task.status,
-      });
-    }
-  }, [task, form]);
-
-  // useEffect(() => {
-  //   // Fetch all users when component mounts
-  //   getAllUsers();
-  // }, []);
+    getAllUsers();
+  }, []);
 
   // Function to fetch all users
-  // const getAllUsers = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "http://localhost:8080/api/v1/user/getallusers"
-  //     );
-  //     setUsers(response.data); // Set the users state with fetched data
-  //   } catch (error) {
-  //     console.error("Error fetching users:", error);
-  //   }
-  // };
+  const getAllUsers = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/api/v1/user/getallusers"
+      );
+      let users = response.data.users.map((user) => ({
+        label: user.username,
+        value: user._id,
+      }));
+      setUsers(users); // Set the users state with fetched data
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
 
   const handleOk = async () => {
     try {
@@ -49,11 +40,12 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
         updatedTask
       );
       handleEditTask(updatedTask);
+      message.success("Task updated successfully");
       form.resetFields(); // Reset form fields after submission
       setOpen(false); // Close the modal after submission
     } catch (error) {
       console.error("Error updating task:", error);
-      // Handle error case here
+      message.error("Failed to update task");
     }
   };
 
@@ -114,24 +106,18 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
             rules={[{ required: true, message: "Please select a user!" }]}
             style={{ flex: 1, marginRight: 8 }}
           >
-            <Select placeholder="Select a user">
-              {users.map((user) => (
-                <Option key={user._id} value={user._id}>
-                  {user.username}
-                </Option>
-              ))}
-            </Select>
+            <Select options={users}></Select>
           </Form.Item>
           <Form.Item
             name="status"
             label={<span style={{ fontSize: "16px" }}>Task Stage :</span>}
-            initialValue="To Do"
+            initialValue="Pending"
             style={{ flex: 1, marginLeft: 8 }}
           >
             <Select placeholder="Select a Status">
-              <Option value="pending">To Do</Option>
-              <Option value="inprogress">In Progress</Option>
-              <Option value="completed">Completed</Option>
+              <Option value="Pending">To Do</Option>
+              <Option value="Inprogress">In Progress</Option>
+              <Option value="Completed">Completed</Option>
             </Select>
           </Form.Item>
         </div>
