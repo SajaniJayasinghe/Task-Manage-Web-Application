@@ -8,7 +8,7 @@ const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [errors, setErrors] = useState(""); // State for error messages
+  const [errors, setErrors] = useState({}); // State for error messages
 
   const resetForm = () => {
     setUsername("");
@@ -36,11 +36,23 @@ const SignUp = () => {
     };
 
     try {
-      await axios.post("http://localhost:8080/api/v1/user/register", user);
-      alert("Registration Success");
-      window.location.href = "/login";
+      const response = await axios.post(
+        "http://localhost:8080/api/v1/user/register",
+        user
+      );
+
+      if (response && response.data) {
+        alert("Registration Success");
+        window.location.href = "/login";
+      } else {
+        setErrors("Registration failed. Please try again.");
+      }
     } catch (err) {
-      setErrors("Registration failed. Please try again.");
+      if (err.response && err.response.data) {
+        setErrors(err.response.data.message);
+      } else {
+        setErrors("Registration failed. Please try again.");
+      }
     }
 
     resetForm();
@@ -74,10 +86,7 @@ const SignUp = () => {
                 </p>
               </div>
               <div className="w-full flex-1 mt-8">
-                <form
-                  onSubmit={sendData}
-                  className="mx-auto max-w-sm flex flex-col gap-4"
-                >
+                <div className="mx-auto max-w-sm flex flex-col gap-4">
                   <div>
                     <input
                       className="w-full px-5 py-3 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white"
@@ -140,7 +149,7 @@ const SignUp = () => {
                   </div>
                   <button
                     className="mt-5 tracking-wide font-semibold bg-blue-900 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
-                    type="submit"
+                    onClick={sendData}
                   >
                     <span className="ml-3">Sign Up</span>
                   </button>
@@ -152,7 +161,7 @@ const SignUp = () => {
                       </span>
                     </Link>
                   </p>
-                </form>
+                </div>
               </div>
             </div>
           </div>
