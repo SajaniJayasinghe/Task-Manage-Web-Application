@@ -16,7 +16,6 @@ import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
-  ExclamationCircleOutlined,
   BellOutlined,
 } from "@ant-design/icons";
 import CreateTasks from "../Tasks/CreateTasks";
@@ -37,7 +36,6 @@ const TaskDetails = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [taskToDelete, setTaskToDelete] = useState(null);
-  const [notificationCount, setNotificationCount] = useState(0);
 
   useEffect(() => {
     fetchTasks();
@@ -60,12 +58,6 @@ const TaskDetails = () => {
 
   const handleCreateTask = (newTask) => {
     setTasks([...tasks, newTask]);
-  };
-
-  const handleEditTask = (updatedTask) => {
-    setTasks(
-      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
   };
 
   const handleDeleteTask = async (id) => {
@@ -91,6 +83,17 @@ const TaskDetails = () => {
     return date.toLocaleDateString(undefined, options);
   };
 
+  const handleEditTask = (updatedTask) => {
+    setTasks(
+      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
+    );
+  };
+
+  const handleEditButtonClick = (task) => {
+    setEditTask(task);
+    setIsEditModalOpen(true);
+  };
+
   return (
     <Layout>
       <Sider className="sidebar">
@@ -99,24 +102,9 @@ const TaskDetails = () => {
       </Sider>
       <Layout>
         <Content style={{ padding: "20px" }}>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <h1
-              style={{
-                fontSize: "28px",
-                fontWeight: "bold",
-                marginLeft: "8px",
-                marginTop: "10px",
-              }}
-            >
-              Tasks
-            </h1>
-            <div>
+          <div className="header-container">
+            <h1 className="header-title">Tasks</h1>
+            <div className="header-buttons">
               <Button
                 type="link"
                 className="custom-bell-button"
@@ -131,14 +119,14 @@ const TaskDetails = () => {
                 Create Task
               </Button>
             </div>
-            {open && (
-              <CreateTasks open={open} setOpen={setOpen} getTask={fetchTasks} />
-            )}
           </div>
-          <div style={{ marginTop: "50px" }}>
+          {open && (
+            <CreateTasks open={open} setOpen={setOpen} getTask={fetchTasks} />
+          )}
+          <div className="tasks-container">
             <Row gutter={[16, 16]}>
               {["Pending", "Inprogress", "Completed"].map((status, index) => (
-                <Col span={8} key={index}>
+                <Col xs={24} sm={24} md={12} lg={8} key={index}>
                   <Card
                     style={{
                       backgroundColor:
@@ -165,20 +153,9 @@ const TaskDetails = () => {
                       .map((task) => (
                         <Card
                           key={task.id}
-                          style={{
-                            marginBottom: "16px",
-                            position: "relative",
-                            borderColor: "black",
-                          }}
+                          className="task-card"
                           title={
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                                alignItems: "center",
-                                marginTop: "10px",
-                              }}
-                            >
+                            <div className="task-card-title">
                               <div>
                                 <span
                                   className={`rounded-full w-3 h-3 inline-block mr-2 ${
@@ -186,29 +163,18 @@ const TaskDetails = () => {
                                   }`}
                                 />
                                 {task.title}
-                                <div
-                                  style={{ fontSize: "14px", color: "#999" }}
-                                >
+                                <div className="task-due-date">
                                   Due Date:{" "}
                                   {new Date(task.dueDate).toLocaleDateString()}
                                 </div>
                               </div>
-                              <div
-                                style={{
-                                  position: "absolute",
-                                  right: "8px",
-                                  bottom: "8px",
-                                }}
-                              >
+                              <div className="task-card-actions">
                                 <Button
                                   type="link"
                                   icon={
                                     <EditOutlined style={{ color: "green" }} />
                                   }
-                                  onClick={() => {
-                                    setEditTask(task);
-                                    setIsEditModalOpen(true);
-                                  }}
+                                  onClick={() => handleEditButtonClick(task)}
                                 />
                                 <Popconfirm
                                   title="Delete the task"
@@ -237,8 +203,8 @@ const TaskDetails = () => {
                             </div>
                           }
                         >
-                          <p>{task.description}</p>
-                          <div style={{ fontSize: "14px", color: "#999" }}>
+                          <p className="task-description">{task.description}</p>
+                          <div className="task-created-at">
                             {new Date(task.createdAt).toLocaleDateString()}
                           </div>
                         </Card>

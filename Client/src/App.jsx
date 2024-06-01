@@ -21,7 +21,7 @@ function App() {
       <Route path="/createtasks" element={<CreateTasks />} />
       <Route path="/taskdetails" element={<TaskDetails />} />
       <Route path="/completedtasks" element={<CompletedTasks />} />
-      <Route path="/edittask" element={<EditTasks />} />
+      <Route path="/updateTask/:taskId" element={<EditTasks />} />
       <Route path="/inprogresstasks" element={<InProgressTasks />} />
       <Route path="/pendingtasks" element={<ToDoTasks />} />
       <Route path="/team" element={<TeamMembers />} />

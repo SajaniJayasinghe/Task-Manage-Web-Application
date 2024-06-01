@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Select, DatePicker } from "antd";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const { Option } = Select;
 
 const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
   const [form] = Form.useForm();
   const [users, setUsers] = useState([]);
+  const [title, setTitle] = useState([]);
+  const [description, setDescription] = useState([]);
+  const [status, setStatus] = useState([]);
+  const [dueDate, setDueDate] = useState([]);
+
+  const params = useParams();
+  const taskId = params.taskId;
 
   useEffect(() => {
     getAllUsers();

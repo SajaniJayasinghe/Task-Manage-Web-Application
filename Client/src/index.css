@@ -160,3 +160,147 @@
   color: black;
   margin-right: 2rem;
 }
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: 8px;
+}
+
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.card-due-date,
+.card-created-at {
+  font-size: 14px;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .dashboard-title {
+    font-size: 24px;
+  }
+
+  .card-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .card-due-date,
+  .card-created-at {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 20px;
+  }
+
+  .card-due-date,
+  .card-created-at {
+    font-size: 10px;
+  }
+}
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-left: 8px;
+  margin-top: 10px;
+}
+
+.header-buttons {
+  display: flex;
+  align-items: center;
+}
+
+.tasks-container {
+  margin-top: 50px;
+}
+
+.task-card {
+  margin-bottom: 16px;
+  position: relative;
+  border-color: black;
+}
+
+.task-card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.task-due-date,
+.task-created-at {
+  font-size: 14px;
+  color: #999;
+}
+
+.task-card-actions {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+}
+
+.task-description {
+  font-size: 14px;
+  color: #333;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .header-title {
+    font-size: 24px;
+  }
+
+  .task-card-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .task-due-date,
+  .task-created-at {
+    font-size: 12px;
+  }
+
+  .task-card-actions {
+    position: static;
+    margin-top: 10px;
+  }
+
+  .task-description {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-title {
+    font-size: 20px;
+  }
+
+  .task-due-date,
+  .task-created-at {
+    font-size: 10px;
+  }
+
+  .task-description {
+    font-size: 10px;
+  }
+}

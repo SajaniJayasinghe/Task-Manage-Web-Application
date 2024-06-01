@@ -59,17 +59,10 @@ const findByIdAndDelete = async (id, session) => {
   }
 };
 
-const findTaskByDueDate = async (dueDate) => {
-  return await Task.find({ dueDate: dueDate })
-    .populate("user")
-    .select("-password");
-};
-
 module.exports = {
   save,
   findAll,
   findById,
   findByIdAndUpdate,
   findByIdAndDelete,
-  findTaskByDueDate,
 };
