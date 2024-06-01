@@ -8,15 +8,17 @@ import {
   Card,
   Row,
   Col,
-  message,
-  Modal,
+  Avatar,
+  Badge,
   Popconfirm,
+  message,
 } from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   BellOutlined,
+  EyeOutlined,
 } from "@ant-design/icons";
 import CreateTasks from "../Tasks/CreateTasks";
 import EditTask from "./EditTasks";
@@ -48,7 +50,7 @@ const TaskDetails = () => {
       );
       setTasks(response.data);
     } catch (error) {
-      message.error("Failed to fetch tasks from the database");
+      console.error("Failed to fetch tasks:", error);
     }
   };
 
@@ -66,9 +68,9 @@ const TaskDetails = () => {
         `http://localhost:8080/api/v1/task/deleteTask/${id}`
       );
       if (response.status === 200) {
-        setTasks(tasks.filter((task) => task.id !== taskToDelete.id));
-        message.success("Task deleted successfully");
+        setTasks(tasks.filter((task) => task._id !== id));
         setIsDeleteModalOpen(false);
+        message.success("Task deleted successfully");
       } else {
         message.error("Failed to delete the task");
       }
@@ -83,10 +85,9 @@ const TaskDetails = () => {
     return date.toLocaleDateString(undefined, options);
   };
 
-  const handleEditTask = (updatedTask) => {
-    setTasks(
-      tasks.map((task) => (task.id === updatedTask.id ? updatedTask : task))
-    );
+  const handleEditTask = () => {
+    fetchTasks();
+    setIsEditModalOpen(false);
   };
 
   const handleEditButtonClick = (task) => {
@@ -105,11 +106,14 @@ const TaskDetails = () => {
           <div className="header-container">
             <h1 className="header-title">Tasks</h1>
             <div className="header-buttons">
-              <Button
-                type="link"
-                className="custom-bell-button"
-                icon={<BellOutlined style={{ fontSize: "25px" }} />}
-              ></Button>
+              <Badge
+                count={5}
+                style={{ marginLeft: "30px", marginRight: "13px" }}
+              >
+                <Avatar style={{ marginRight: "13px" }}>
+                  <BellOutlined style={{ fontSize: "25px" }} />
+                </Avatar>
+              </Badge>
               <Button
                 type="primary"
                 icon={<PlusOutlined />}
@@ -149,10 +153,13 @@ const TaskDetails = () => {
                     bordered={false}
                   >
                     {tasks
-                      .filter((task) => task.status === status)
+                      .filter(
+                        (task) =>
+                          task.status.toLowerCase() === status.toLowerCase()
+                      )
                       .map((task) => (
                         <Card
-                          key={task.id}
+                          key={task._id}
                           className="task-card"
                           title={
                             <div className="task-card-title">
@@ -169,6 +176,13 @@ const TaskDetails = () => {
                                 </div>
                               </div>
                               <div className="task-card-actions">
+                                <Button
+                                  type="link"
+                                  icon={
+                                    <EyeOutlined style={{ color: "purple" }} />
+                                  }
+                                  href={`/getTask/${task._id}`}
+                                />
                                 <Button
                                   type="link"
                                   icon={
@@ -193,10 +207,6 @@ const TaskDetails = () => {
                                         style={{ color: "red" }}
                                       />
                                     }
-                                    onClick={() => {
-                                      setTaskToDelete(task);
-                                      setIsDeleteModalOpen(true);
-                                    }}
                                   />
                                 </Popconfirm>
                               </div>

@@ -58,6 +58,11 @@ const findByIdAndDelete = async (id, session) => {
     return await Task.findByIdAndDelete(id);
   }
 };
+const findTaskByDueDate = async (dueDate) => {
+  return await Task.find({ dueDate: dueDate })
+    .populate("user")
+    .select("-password");
+};
 
 module.exports = {
   save,
@@ -65,4 +70,5 @@ module.exports = {
   findById,
   findByIdAndUpdate,
   findByIdAndDelete,
+  findTaskByDueDate,
 };

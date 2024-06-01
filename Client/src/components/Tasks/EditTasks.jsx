@@ -1,36 +1,46 @@
 import React, { useState, useEffect } from "react";
-import { Modal, Form, Input, Select, DatePicker } from "antd";
+import { Modal, Form, Input, Select, DatePicker, message } from "antd";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 const { Option } = Select;
 
-const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
+const EditTasks = ({ open, setOpen, task, handleEditTask }) => {
   const [form] = Form.useForm();
   const [users, setUsers] = useState([]);
-  const [title, setTitle] = useState([]);
-  const [description, setDescription] = useState([]);
-  const [status, setStatus] = useState([]);
-  const [dueDate, setDueDate] = useState([]);
-
-  const params = useParams();
-  const taskId = params.taskId;
+  const [initialValues, setInitialValues] = useState({
+    title: "",
+    description: "",
+    status: "Pending",
+    dueDate: null,
+    createdAt: null,
+    user: "",
+  });
 
   useEffect(() => {
+    if (task) {
+      setInitialValues({
+        title: task.title,
+        description: task.description,
+        status: task.status,
+        dueDate: dayjs(task.dueDate),
+        createdAt: dayjs(task.createdAt),
+        user: task.user,
+      });
+    }
     getAllUsers();
-  }, []);
+  }, [task]);
 
-  // Function to fetch all users
   const getAllUsers = async () => {
     try {
       const response = await axios.get(
         "http://localhost:8080/api/v1/user/getallusers"
       );
-      let users = response.data.users.map((user) => ({
+      const usersData = response.data.users.map((user) => ({
         label: user.username,
         value: user._id,
       }));
-      setUsers(users); // Set the users state with fetched data
+      setUsers(usersData);
     } catch (error) {
       console.error("Error fetching users:", error);
     }
@@ -42,15 +52,17 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
       const updatedTask = {
         ...task,
         ...values,
+        dueDate: values.dueDate ? values.dueDate.toISOString() : null,
+        createdAt: values.createdAt ? values.createdAt.toISOString() : null,
       };
       await axios.put(
         `http://localhost:8080/api/v1/task/updateTask/${task._id}`,
         updatedTask
       );
-      handleEditTask(updatedTask);
+      handleEditTask();
+      form.resetFields();
+      setOpen(false);
       message.success("Task updated successfully");
-      form.resetFields(); // Reset form fields after submission
-      setOpen(false); // Close the modal after submission
     } catch (error) {
       console.error("Error updating task:", error);
       message.error("Failed to update task");
@@ -58,8 +70,8 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
   };
 
   const handleCancel = () => {
-    form.resetFields(); // Reset form fields when the modal is closed
-    setOpen(false); // Close the modal
+    form.resetFields();
+    setOpen(false);
   };
 
   return (
@@ -78,6 +90,7 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
         layout="vertical"
         name="editTaskForm"
         style={{ marginTop: 20 }}
+        initialValues={initialValues}
       >
         <Form.Item
           name="title"
@@ -91,12 +104,16 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
         </Form.Item>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Form.Item
-            name="assignDate"
+            name="createdAt"
             label={<span style={{ fontSize: "16px" }}>Assign Date :</span>}
-            initialValue={task ? task.assignDate : ""}
             style={{ flex: 1, marginRight: 8 }}
           >
-            <Input type="date" disabled />
+            <DatePicker
+              value={initialValues.createdAt}
+              format="YYYY-MM-DD"
+              style={{ width: "100%" }}
+              disabled
+            />
           </Form.Item>
           <Form.Item
             name="dueDate"
@@ -104,7 +121,11 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
             rules={[{ required: true, message: "Date is required!" }]}
             style={{ flex: 1, marginLeft: 8 }}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <DatePicker
+              value={initialValues.dueDate}
+              format="YYYY-MM-DD"
+              style={{ width: "100%" }}
+            />
           </Form.Item>
         </div>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -119,7 +140,6 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
           <Form.Item
             name="status"
             label={<span style={{ fontSize: "16px" }}>Task Stage :</span>}
-            initialValue="Pending"
             style={{ flex: 1, marginLeft: 8 }}
           >
             <Select placeholder="Select a Status">
@@ -134,4 +154,4 @@ const EditTaskForm = ({ open, setOpen, task, handleEditTask }) => {
   );
 };
 
-export default EditTaskForm;
+export default EditTasks;

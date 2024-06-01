@@ -25,8 +25,6 @@ const sendTaskReminder = async () => {
       const subject = "Task Reminder";
       const htmlBody = TaskReminderTemplate(task);
 
-      console.log("Sending task reminder email to: ", email);
-
       await sendEmail(email, subject, htmlBody, null);
     });
   });

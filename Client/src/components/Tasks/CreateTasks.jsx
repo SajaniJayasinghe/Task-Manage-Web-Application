@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Input, Button, Select, DatePicker } from "antd";
 import axios from "axios";
+import moment from "moment";
 
 const { Option } = Select;
 
@@ -9,7 +10,7 @@ const CreateTaskForm = ({ open, setOpen, getTask }) => {
   const [users, setUsers] = useState([]);
 
   // Get today's date in YYYY-MM-DD format
-  const today = new Date().toISOString().split("T")[0];
+  const today = moment().format("YYYY-MM-DD");
 
   useEffect(() => {
     getAllUsers();
@@ -39,7 +40,11 @@ const CreateTaskForm = ({ open, setOpen, getTask }) => {
 
       const response = await axios.post(
         "http://localhost:8080/api/v1/task/createTask",
-        values
+        {
+          ...values,
+          dueDate: values.dueDate.format("YYYY-MM-DD"),
+          assignedDate: today,
+        }
       );
       console.log("Task created:", response.data);
 
@@ -84,16 +89,16 @@ const CreateTaskForm = ({ open, setOpen, getTask }) => {
         </Form.Item>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <Form.Item
-            name="tody"
+            name="assignedDate"
             label={<span style={{ fontSize: "16px" }}>Assign Date :</span>}
             initialValue={today}
             style={{ flex: 1, marginRight: 8 }}
           >
-            <Input type="date" disabled />
+            <Input type="date" value={today} disabled />
           </Form.Item>
           <Form.Item
             name="dueDate"
-            label={<span style={{ fontSize: "16px" }}> Due Date :</span>}
+            label={<span style={{ fontSize: "16px" }}>Due Date :</span>}
             rules={[{ required: true, message: "Date is required!" }]}
             style={{ flex: 1, marginLeft: 8 }}
           >
