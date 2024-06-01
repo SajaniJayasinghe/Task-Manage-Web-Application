@@ -4,7 +4,7 @@ import MenuList from "../Sidebar/MenuList";
 import Logo from "../Sidebar/Logo";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import LoginImage from "../../assets/images/login.png";
+import TaskImage from "../../assets/images/task.jpeg";
 
 const { Sider, Content } = Layout;
 
@@ -48,12 +48,12 @@ const SpecificTask = () => {
           <div className="h-[100vh] items-center flex justify-center px-5 lg:px-0">
             <div className="max-w-screen-xl h-[640px] bg-white border shadow sm:rounded-lg flex justify-center flex-1">
               <div className="flex-1 bg-violet-10 text-center hidden md:flex">
-                <div className="m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat">
+                <div className="m-6 xl:m-8 w-full bg-contain bg-center bg-no-repeat">
                   <img
-                    src={LoginImage}
+                    src={TaskImage}
                     alt="login"
-                    width={"500px"}
                     draggable={false}
+                    style={{ marginTop: "80px" }}
                   />
                 </div>
               </div>

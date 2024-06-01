@@ -2,7 +2,7 @@ import { Menu } from "antd";
 import { useState, useEffect } from "react";
 import {
   HomeOutlined,
-  SettingOutlined,
+  RollbackOutlined,
   AreaChartOutlined,
 } from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -61,9 +61,9 @@ const MenuList = () => {
       label: "Profile",
     },
     {
-      key: "#",
-      icon: <SettingOutlined />,
-      label: "Setting",
+      key: "/",
+      icon: <RollbackOutlined />,
+      label: "Logout",
     },
   ];
 
