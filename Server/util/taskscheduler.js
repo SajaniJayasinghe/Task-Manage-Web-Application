@@ -13,7 +13,7 @@ const cronJob = (cronTime, callback) => {
 // 0 6 * * * => every day at 6 am
 
 const sendTaskReminder = async () => {
-  cronJob("*/30 * * * * *", async () => {
+  cronJob("0 6 * * *", async () => {
     console.log("Task reminder cron job running...");
 
     const today = moment().format("YYYY-MM-DD") + "T00:00:00.000Z";
