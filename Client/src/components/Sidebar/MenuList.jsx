@@ -1,17 +1,23 @@
 import { Menu } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   HomeOutlined,
   SettingOutlined,
   AreaChartOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { FaTasks, FaUser, FaUsers } from "react-icons/fa";
 import { MdTaskAlt, MdOutlinePendingActions } from "react-icons/md";
 
 const MenuList = () => {
-  const [selectedKeys, setSelectedKeys] = useState(["/dashboard"]);
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [selectedKeys, setSelectedKeys] = useState([location.pathname]);
+
+  useEffect(() => {
+    setSelectedKeys([location.pathname]);
+  }, [location.pathname]);
 
   const handleMenuSelect = (e) => {
     setSelectedKeys([e.key]);
